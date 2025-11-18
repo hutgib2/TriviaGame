@@ -7,7 +7,7 @@ class TriviaGame():
     def __init__(self):
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         self.running = True
-        self.surfs = folder_importer('assets')
+        self.surfs = folder_importer('assets', 'images')
 
         self.surfs['background'] = pygame.transform.smoothscale(self.surfs['background'], (WINDOW_WIDTH, WINDOW_HEIGHT))
         self.screen.blit(self.surfs['background'], (0,0))
