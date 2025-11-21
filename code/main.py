@@ -12,7 +12,7 @@ class TriviaGame():
         self.surfs['background'] = pygame.transform.smoothscale(self.surfs['background'], (WINDOW_WIDTH, WINDOW_HEIGHT))
         self.screen.blit(self.surfs['background'], (0,0))
         
-        self.button = Button(self.surfs['button'], (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
+        self.button = Button(self.surfs['button'], (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), (360, 250), "Play")
         self.screen.blit(self.button.image, self.button.rect.center)
         
         pygame.display.update()
