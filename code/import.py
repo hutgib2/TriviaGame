@@ -3,7 +3,11 @@ import json
 import html
 
 url = "https://opentdb.com/api.php?amount=50&type=multiple"
-response = requests.get(url)
+easy_url = "https://opentdb.com/api.php?amount=50&difficulty=easy&type=multiple"
+medium_url = "https://opentdb.com/api.php?amount=50&difficulty=medium&type=multiple"
+hard_url = "https://opentdb.com/api.php?amount=50&difficulty=hard&type=multiple"
+response = requests.get(hard_url)
+response.encoding = 'utf-8'
 data = response.json()
 new_questions = data["results"]
 
