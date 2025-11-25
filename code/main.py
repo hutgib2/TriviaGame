@@ -11,15 +11,15 @@ class TriviaGame():
 
         self.surfs['background'] = pygame.transform.smoothscale(self.surfs['background'], (WINDOW_WIDTH, WINDOW_HEIGHT))
         self.buttons = pygame.sprite.Group()
-        self.start_button = Button(self.surfs['button'], (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), (450, 160), "Play", self.start)
+        self.start_button = Button(self.surfs['button'], self.surfs['button_hover'], (WINDOW_WIDTH / 1.67, WINDOW_HEIGHT / 1.06), (412, 144), "Play", self.start)
         self.buttons.add(self.start_button)
 
     def start(self):
         self.start_button.kill()
-        self.buttons.add(Button(self.surfs['button'], (400, 400), (450, 160), "A", self.start))
-        self.buttons.add(Button(self.surfs['button'], (800, 400), (450, 160), "B", self.start))
-        self.buttons.add(Button(self.surfs['button'], (400, 800), (450, 160), "C", self.start))
-        self.buttons.add(Button(self.surfs['button'], (800,800), (450, 160), "D", self.start))
+        self.buttons.add(Button(self.surfs['button'], self.surfs['button_hover'], (WINDOW_WIDTH / 4, 5*WINDOW_HEIGHT / 8), (425, 155), "A", self.start))
+        self.buttons.add(Button(self.surfs['button'], self.surfs['button_hover'], (3*WINDOW_WIDTH / 4, 5*WINDOW_HEIGHT / 8), (425, 155), "B", self.start))
+        self.buttons.add(Button(self.surfs['button'], self.surfs['button_hover'], (WINDOW_WIDTH / 4, 7*WINDOW_HEIGHT / 8), (425, 155), "C", self.start))
+        self.buttons.add(Button(self.surfs['button'], self.surfs['button_hover'], (3*WINDOW_WIDTH / 4, 7*WINDOW_HEIGHT / 8), (425, 155), "D", self.start))
 
     def run(self):
         while self.running:
