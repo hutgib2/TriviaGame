@@ -9,7 +9,7 @@ class Button(pygame.sprite.Sprite):
         
         # text
         self.text = text
-        self.font = pygame.font.Font(None, 128)
+        self.font = pygame.font.Font(None, 100)
         self.text_surf = self.font.render(self.text, True, "darkcyan")
         self.text_rect = self.text_surf.get_frect(center=pos)
 

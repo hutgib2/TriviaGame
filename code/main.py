@@ -67,12 +67,11 @@ class TriviaGame():
         else:
             self.background = self.surfs['ya_lose']
             self.buttons.empty()
-            self.current_question = None
             self.state = 'lose'
             self.running = False
         
     def display_question(self):
-        if self.current_question:
+        if self.state == 'game':
             font = pygame.font.Font(None, 50)
             text_surf = font.render(self.current_question["question"], True, "white")
             text_rect = text_surf.get_frect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 8))
