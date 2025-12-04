@@ -5,11 +5,12 @@ import random
 import json
 import time
 pygame.init()
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+WINDOW_WIDTH, WINDOW_HEIGHT = screen.get_size()
 
 class TriviaGame():
     def __init__(self):
         # general
-        self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         self.running = True
         self.state = 'home'
 
@@ -36,10 +37,10 @@ class TriviaGame():
         self.background = self.surfs['blank_screen']
         self.start_button.kill()
         self.update_current_question()
-        self.buttons.add(Button(self.surfs['button'], self.surfs['button_hover'], (WINDOW_WIDTH / 4, 5*WINDOW_HEIGHT / 8), (1000, 320), self.answers[0]))
-        self.buttons.add(Button(self.surfs['button'], self.surfs['button_hover'], (3*WINDOW_WIDTH / 4, 5*WINDOW_HEIGHT / 8), (1000, 320), self.answers[1]))
-        self.buttons.add(Button(self.surfs['button'], self.surfs['button_hover'], (WINDOW_WIDTH / 4, 7*WINDOW_HEIGHT / 8), (1000, 320), self.answers[2]))
-        self.buttons.add(Button(self.surfs['button'], self.surfs['button_hover'], (3*WINDOW_WIDTH / 4, 7*WINDOW_HEIGHT / 8), (1000, 320), self.answers[3]))
+        self.buttons.add(Button(self.surfs['button'], self.surfs['button_hover'], (WINDOW_WIDTH / 4, 5*WINDOW_HEIGHT / 8), (WINDOW_WIDTH / 3, WINDOW_HEIGHT / 5), self.answers[0]))
+        self.buttons.add(Button(self.surfs['button'], self.surfs['button_hover'], (3*WINDOW_WIDTH / 4, 5*WINDOW_HEIGHT / 8), (WINDOW_WIDTH / 3, WINDOW_HEIGHT / 5), self.answers[1]))
+        self.buttons.add(Button(self.surfs['button'], self.surfs['button_hover'], (WINDOW_WIDTH / 4, 7*WINDOW_HEIGHT / 8), (WINDOW_WIDTH / 3, WINDOW_HEIGHT / 5), self.answers[2]))
+        self.buttons.add(Button(self.surfs['button'], self.surfs['button_hover'], (3*WINDOW_WIDTH / 4, 7*WINDOW_HEIGHT / 8), (WINDOW_WIDTH / 3, WINDOW_HEIGHT / 5), self.answers[3]))
 
     def update_current_question(self):
         self.current_question = self.questions[self.index]
@@ -69,13 +70,17 @@ class TriviaGame():
             self.buttons.empty()
             self.state = 'lose'
             self.running = False
+
         
     def display_question(self):
         if self.state == 'game':
             font = pygame.font.Font(None, 50)
             text_surf = font.render(self.current_question["question"], True, "white")
+            if text_surf.get_width() > WINDOW_WIDTH:
+                self.current_question["question"] = split_string(self.current_question["question"])
+                text_surf = font.render(self.current_question["question"], True, "white")
             text_rect = text_surf.get_frect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 8))
-            self.screen.blit(text_surf, text_rect)
+            screen.blit(text_surf, text_rect)
 
     def import_questions(self):
         easy_questions = []
@@ -103,9 +108,9 @@ class TriviaGame():
                 if event.type == pygame.QUIT:
                     self.running = False
             
-            self.screen.blit(self.background, (0,0))
+            screen.blit(self.background, (0,0))
             self.display_question()
-            self.buttons.update(self.screen)
+            self.buttons.update(screen)
             pygame.display.update()
         if self.state == 'lose':
             time.sleep(3)        

@@ -14,3 +14,9 @@ def audio_importer(*path):
         for file_name in file_names:
             audio_dict[file_name.split('.')[0]] = pygame.mixer.Sound(join(folder_path, file_name))
     return audio_dict
+
+def split_string(string):
+    i = int(len(string)/2)
+    while string[i] != ' ':
+        i += 1
+    return string[:i] + '\n' + string[i+1:]
