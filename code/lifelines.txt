@@ -1,5 +1,5 @@
 1. resurrection: brings back a used lifeline
 2. magic cup: you must pick one of four cups and will be able to
 remove either 0, 1, 2 or 3 incorrect answers
-3. double dip: Contestant can give a second answer if the first is wrong but can still walk away afterwards.
+3. extra dip: Contestant can give a second answer if the first is wrong but can still walk away afterwards.
 4. switch: replaces the question with an easier one regardless of difficulty
