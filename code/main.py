@@ -32,7 +32,7 @@ class TriviaGame():
 
         # game_buttons
         self.start_button = Button(self.surfs['button'], self.surfs['button_hover'], (WINDOW_WIDTH / 1.67, WINDOW_HEIGHT / 1.06), (412, 144), self.game_buttons)
-        self.text_buttons.add(TextSprite('play', self.start_button.rect.center, "darkcyan", self.start_button.rect.width, self.start_button.rect.width / 8))
+        self.start_text = TextSprite('play', self.start_button.rect.center, "darkcyan", self.start_button.rect.width, self.start_button.rect.width / 8, (self.all_sprites, self.text_buttons))
         
         # questions
         self.import_questions()
@@ -40,33 +40,37 @@ class TriviaGame():
         self.choice = None
         self.round_number = 0
 
+        # lifelines
+        self.x2_lifeline_active = False
+
     def create_prize_tree(self):
         # draw 15 increasing values of money on the far left of the screen from bottom to top
         for i in range(31, 1, -2):
-            Button(self.surfs['prize_button'], self.surfs['prize_won'], (WINDOW_WIDTH / 10, (i*WINDOW_HEIGHT / 34)), (WINDOW_WIDTH / 13, WINDOW_HEIGHT / 18), self.prize_buttons)
+            Button(self.surfs['prize_button'], self.surfs['prize_won'], (WINDOW_WIDTH / 10, (i*WINDOW_HEIGHT / 34)), (WINDOW_WIDTH / 13, WINDOW_HEIGHT / 18), (self.prize_buttons, self.all_sprites))
         for prize, button in zip(prize_money, self.prize_buttons):
-            self.text_static.add(TextSprite(prize, button.rect.center, "darkgreen", button.rect.width, button.rect.width / 8))
+            TextSprite(prize, button.rect.center, "darkgreen", button.rect.width, button.rect.width / 8, (self.all_sprites, self.text_static))
 
     def start_game(self):
         self.background = self.surfs['blank_screen']
         self.start_button.kill()
+        self.start_text.kill()
         self.create_prize_tree()
         Button(self.surfs['button'], self.surfs['button_hover'], ((WINDOW_WIDTH / 2)-32, 5*WINDOW_HEIGHT / 8), (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 5), self.game_buttons)
         Button(self.surfs['button'], self.surfs['button_hover'], (3*WINDOW_WIDTH / 4, 5*WINDOW_HEIGHT / 8), (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 5), self.game_buttons)
         Button(self.surfs['button'], self.surfs['button_hover'], ((WINDOW_WIDTH / 2)-32, 7*WINDOW_HEIGHT / 8), (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 5), self.game_buttons)
         Button(self.surfs['button'], self.surfs['button_hover'], (3*WINDOW_WIDTH / 4, 7*WINDOW_HEIGHT / 8), (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 5), self.game_buttons)
-        Button(self.surfs['x2_lifeline'], self.surfs['x2_lifeline'], (WINDOW_WIDTH / 5, WINDOW_HEIGHT / 3), (WINDOW_WIDTH / 10, WINDOW_HEIGHT / 8), self.lifelines)
+        Button(self.surfs['x2_lifeline'], self.surfs['x2_lifeline'], (WINDOW_WIDTH / 5, WINDOW_HEIGHT / 3), (WINDOW_WIDTH / 10, WINDOW_HEIGHT / 8), (self.lifelines, self.all_sprites))
         self.update_current_question()
 
     def update_current_question(self):
         self.current_question = self.questions[self.round_number]
         answers = [self.current_question["correct_answer"], self.current_question["incorrect_answers"][0], self.current_question["incorrect_answers"][1], self.current_question["incorrect_answers"][2]]
         random.shuffle(answers)
-        
-        self.text_buttons.empty()
-        self.text_buttons.add(TextSprite(self.current_question["question"], (5*WINDOW_WIDTH / 8, WINDOW_HEIGHT / 8), "white", 2*WINDOW_WIDTH/3, WINDOW_WIDTH / 32))
+        for text_button in self.text_buttons:
+            text_button.kill()
+        TextSprite(self.current_question["question"], (5*WINDOW_WIDTH / 8, WINDOW_HEIGHT / 8), "white", 2*WINDOW_WIDTH/3, WINDOW_WIDTH / 32, (self.all_sprites, self.text_buttons))
         for answer, button in zip(answers, self.game_buttons):
-            self.text_buttons.add(TextSprite(answer, button.rect.center, "darkcyan", button.rect.width, button.rect.width / 8))
+            TextSprite(answer, button.rect.center, "darkcyan", button.rect.width, button.rect.width / 8, (self.all_sprites, self.text_buttons))
             button.text = answer
 
     def button_clicked(self):
@@ -79,19 +83,24 @@ class TriviaGame():
     def update_round(self):
         # update prize button colour
         list(self.prize_buttons)[self.round_number].image = list(self.prize_buttons)[self.round_number].image_hover
+        for game_button in self.game_buttons:
+            if not game_button.is_active:
+                game_button.reactivate(self.surfs["button"])
+
         self.round_number += 1
         self.update_current_question()
 
     def check_result(self):
         if self.choice.text == self.current_question["correct_answer"]:
             self.update_round()
+        elif self.x2_lifeline_active:
+            self.x2_lifeline_active = False
+            self.choice.deactivate(self.surfs["button_disabled"])
+
         else:
             self.background = self.surfs['ya_lose']
             self.game_buttons.empty()
-            self.prize_buttons.empty()
-            self.text_buttons.empty()
-            self.text_static.empty()
-            self.lifelines.empty()
+            self.all_sprites.empty()
             self.state = 'lose'
             self.running = False
 
@@ -123,10 +132,7 @@ class TriviaGame():
             
             pygame.display.get_surface().blit(self.background, (0,0))
             self.game_buttons.update()
-            self.prize_buttons.draw(screen)
-            self.lifelines.draw(screen)
-            self.text_buttons.draw(screen)
-            self.text_static.draw(screen)
+            self.all_sprites.draw(screen)
             pygame.display.update()
         if self.state == 'lose':
             time.sleep(3)        
