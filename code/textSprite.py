@@ -10,4 +10,6 @@ class TextSprite(pygame.sprite.Sprite):
         if self.image.get_width() > max_width:
             self.image = self.font.render(split_string(self.text), True, color)
         self.rect = self.image.get_frect(center=pos)
-        
+    
+    def update(self):
+        pygame.display.get_surface().blit(self.image, self.rect)
