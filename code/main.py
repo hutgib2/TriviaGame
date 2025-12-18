@@ -5,9 +5,6 @@ from textSprite import TextSprite
 import random
 import json
 import time
-pygame.init()
-screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-WINDOW_WIDTH, WINDOW_HEIGHT = screen.get_size()
 
 class TriviaGame():
     def __init__(self):
@@ -16,22 +13,19 @@ class TriviaGame():
         self.state = 'home'
 
         # surfs
-        self.surfs = folder_importer('assets', 'images')
-        self.surfs['home_screen'] = pygame.transform.smoothscale(self.surfs['home_screen'], (WINDOW_WIDTH, WINDOW_HEIGHT))
-        self.surfs['blank_screen'] = pygame.transform.smoothscale(self.surfs['blank_screen'], (WINDOW_WIDTH, WINDOW_HEIGHT))
-        self.surfs['ya_lose'] = pygame.transform.smoothscale(self.surfs['ya_lose'], (WINDOW_WIDTH, WINDOW_HEIGHT))
-        self.background = self.surfs['home_screen']
+        SCREENS['home'] = pygame.transform.smoothscale(SCREENS['home'], (WINDOW_WIDTH, WINDOW_HEIGHT))
+        SCREENS['blank'] = pygame.transform.smoothscale(SCREENS['blank'], (WINDOW_WIDTH, WINDOW_HEIGHT))
+        SCREENS['lose'] = pygame.transform.smoothscale(SCREENS['lose'], (WINDOW_WIDTH, WINDOW_HEIGHT))
+        self.background = SCREENS['home']
 
         # groups
-        self.text_static = pygame.sprite.Group()
         self.game_buttons = pygame.sprite.Group()
         self.prize_buttons = pygame.sprite.Group()
         self.lifelines = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
 
         # game_buttons
-        self.start_button = InteractiveButton(self.surfs['button'], self.surfs['button_hover'], self.surfs['button_hover'],  (WINDOW_WIDTH / 1.67, WINDOW_HEIGHT / 1.06), (412, 144), (self.game_buttons, self.all_sprites))
-        self.start_button.update_text('play')
+        self.start_button = InteractiveButton(GAME_BUTTONS['surfs'],  (WINDOW_WIDTH / 1.67, WINDOW_HEIGHT / 1.06), (412, 144), (self.game_buttons, self.all_sprites), 'play')
         
         # questions
         self.import_questions()
@@ -46,19 +40,24 @@ class TriviaGame():
     def create_prize_tree(self):
         # draw 15 increasing values of money on the far left of the screen from bottom to top
         for i in range(31, 1, -2):
-            Button(self.surfs['prize_button'], self.surfs['prize_won'],  (WINDOW_WIDTH / 10, (i*WINDOW_HEIGHT / 34)), (WINDOW_WIDTH / 13, WINDOW_HEIGHT / 18), (self.prize_buttons, self.all_sprites))
+            Button(PRIZE_BUTTONS,  (WINDOW_WIDTH / 10, (i*WINDOW_HEIGHT / 34)), (WINDOW_WIDTH / 13, WINDOW_HEIGHT / 18), (self.prize_buttons, self.all_sprites))
         for prize, button in zip(prize_money, self.prize_buttons):
             button.update_text(prize)
 
     def start_game(self):
-        self.background = self.surfs['blank_screen']
+        self.background = SCREENS['blank']
         self.start_button.kill()
         self.create_prize_tree()
-        InteractiveButton(self.surfs['button'], self.surfs['button_hover'], self.surfs['button_disabled'], ((WINDOW_WIDTH / 2)-32, 5*WINDOW_HEIGHT / 8), (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 5), (self.game_buttons, self.all_sprites))
-        InteractiveButton(self.surfs['button'], self.surfs['button_hover'], self.surfs['button_disabled'], (3*WINDOW_WIDTH / 4, 5*WINDOW_HEIGHT / 8), (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 5), (self.game_buttons, self.all_sprites))
-        InteractiveButton(self.surfs['button'], self.surfs['button_hover'], self.surfs['button_disabled'], ((WINDOW_WIDTH / 2)-32, 7*WINDOW_HEIGHT / 8), (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 5), (self.game_buttons, self.all_sprites))
-        InteractiveButton(self.surfs['button'], self.surfs['button_hover'], self.surfs['button_disabled'], (3*WINDOW_WIDTH / 4, 7*WINDOW_HEIGHT / 8), (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 5), (self.game_buttons, self.all_sprites))
-        InteractiveButton(self.surfs['x2_lifeline'], self.surfs['x2_hover'], self.surfs['x2_disabled'], (WINDOW_WIDTH / 5, WINDOW_HEIGHT / 3), (WINDOW_WIDTH / 10, WINDOW_HEIGHT / 8), (self.lifelines, self.all_sprites))
+
+        # game buttons
+        InteractiveButton(GAME_BUTTONS['surfs'], GAME_BUTTONS["pos"]["top_left"], GAME_BUTTONS["size"], (self.game_buttons, self.all_sprites))
+        InteractiveButton(GAME_BUTTONS['surfs'], GAME_BUTTONS["pos"]["top_right"], GAME_BUTTONS["size"], (self.game_buttons, self.all_sprites))
+        InteractiveButton(GAME_BUTTONS['surfs'], GAME_BUTTONS["pos"]["bottom_left"], GAME_BUTTONS["size"], (self.game_buttons, self.all_sprites))
+        InteractiveButton(GAME_BUTTONS['surfs'], GAME_BUTTONS["pos"]["bottom_right"], GAME_BUTTONS["size"], (self.game_buttons, self.all_sprites))
+
+        # lifelines
+        InteractiveButton(X2_LIFELINE, LIFELINES["pos"][0], LIFELINES["size"], (self.lifelines, self.all_sprites))
+        
         self.update_current_question()
 
     def update_current_question(self):
@@ -85,6 +84,7 @@ class TriviaGame():
             if not game_button.is_active:
                 game_button.reactivate()
 
+        self.x2_lifeline_active = False
         self.round_number += 1
         self.update_current_question()
 
@@ -92,11 +92,10 @@ class TriviaGame():
         if self.choice.text == self.current_question["correct_answer"]:
             self.update_round()
         elif self.x2_lifeline_active:
-            self.x2_lifeline_active = False
             self.choice.deactivate()
-
+            self.x2_lifeline_active = False
         else:
-            self.background = self.surfs['ya_lose']
+            self.background = SCREENS['lose']
             self.game_buttons.empty()
             self.all_sprites.empty()
             self.state = 'lose'
@@ -125,12 +124,15 @@ class TriviaGame():
                         if button.rect.collidepoint(event.pos):
                             self.choice = button
                             self.button_clicked()
+                    for button in self.lifelines:
+                        if button.rect.collidepoint(event.pos) and button.is_active:
+                            button.deactivate()
+                            self.x2_lifeline_active = True
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     self.running = False
             
             pygame.display.get_surface().blit(self.background, (0,0))
             self.all_sprites.update()
-            self.text_static.draw(screen)
             pygame.display.update()
         if self.state == 'lose':
             time.sleep(3)        
