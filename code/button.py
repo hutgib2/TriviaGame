@@ -1,5 +1,5 @@
 from settings import *
-# from support import split_string
+from support import split_string
 from textSprite import TextSprite
 
 class Button(pygame.sprite.Sprite):
@@ -31,9 +31,14 @@ class Button(pygame.sprite.Sprite):
         pygame.display.get_surface().blit(self.text_sprite.image, self.text_sprite.rect)
 
 class InteractiveButton(Button):
-    def __init__(self, surf_dict, pos, size, groups, text=''):
+    def __init__(self, surf_dict, pos, size, groups, callback, text=''):
         super().__init__(surf_dict, pos, size, groups, text)
         self.image_hover = pygame.transform.smoothscale(surf_dict['hover'], size)
+        self.callback = callback
+
+    def is_clicked(self):
+        if self.is_active:
+            self.callback()
     
     def update(self):
         if not self.is_active:
