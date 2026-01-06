@@ -31,8 +31,17 @@ LIFELINES = {
 
 SCREENS = folder_importer('assets', 'images', 'screens')
 PRIZE_BUTTONS = folder_importer('assets', 'images', 'prize_button')
-# X2_LIFELINE = folder_importer('assets', 'images', 'x2_lifeline')
 
+MAGIC_CUPS = {
+    'POS' : [
+        (11*WINDOW_WIDTH / 32, 3*WINDOW_HEIGHT / 8),
+        (17*WINDOW_WIDTH / 32, 3*WINDOW_HEIGHT / 8),
+        (23*WINDOW_WIDTH / 32, 3*WINDOW_HEIGHT / 8),
+        (29*WINDOW_WIDTH / 32, 3*WINDOW_HEIGHT / 8)
+    ],
+    'size' : (3*WINDOW_WIDTH / 32,WINDOW_HEIGHT / 4),
+    'SURFS': folder_importer('assets', 'images', 'magic_cup')
+}
 prize_money = [
     '£50', 
     '£100', 

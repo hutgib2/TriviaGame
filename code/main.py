@@ -2,6 +2,7 @@ from settings import *
 from support import *
 from button import *
 from textSprite import TextSprite
+from cup import Cup
 import random
 import json
 import time
@@ -44,6 +45,8 @@ class TriviaGame():
         for prize, button in zip(prize_money, self.prize_buttons):
             button.update_text(prize)
 
+    # lifelines activation
+
     def activate_x2(self):
         self.x2_active = True
 
@@ -57,6 +60,15 @@ class TriviaGame():
 
     def activate_switch(self):
         self.update_current_question(self.easy_questions.pop())
+
+    def activate_magic_cup(self):
+        numbers = [0, 1, 2, 3]
+        random.shuffle(numbers)
+
+        Cup(MAGIC_CUPS['POS'][0], numbers.pop(), self.all_sprites)
+        Cup(MAGIC_CUPS['POS'][1], numbers.pop(), self.all_sprites)
+        Cup(MAGIC_CUPS['POS'][2], numbers.pop(), self.all_sprites)
+        Cup(MAGIC_CUPS['POS'][3], numbers.pop(), self.all_sprites)
 
     def start_game(self):
         self.background = SCREENS['blank']
@@ -73,7 +85,7 @@ class TriviaGame():
         InteractiveButton(LIFELINES['SURFS'], LIFELINES["POS"][0], LIFELINES["size"], (self.lifelines, self.all_sprites), self.activate_x2, "X2")
         InteractiveButton(LIFELINES['SURFS'], LIFELINES["POS"][1], LIFELINES["size"], (self.lifelines, self.all_sprites), self.activate_revive, "Revive")
         InteractiveButton(LIFELINES['SURFS'], LIFELINES["POS"][2], LIFELINES["size"], (self.lifelines, self.all_sprites), self.activate_switch, "Switch")
-        # InteractiveButton(LIFELINES['SURFS'], LIFELINES["POS"][3], LIFELINES["size"], (self.lifelines, self.all_sprites), self.activate_x2, "Magic Cup")
+        InteractiveButton(LIFELINES['SURFS'], LIFELINES["POS"][3], LIFELINES["size"], (self.lifelines, self.all_sprites), self.activate_magic_cup, "Magic Cup")
         self.update_current_question(self.questions[0])
 
     def update_current_question(self, question):
