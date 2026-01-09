@@ -6,6 +6,7 @@ from cup import Cup
 import random
 import json
 import time
+from timer import Timer
 
 class TriviaGame():
     def __init__(self):
@@ -24,10 +25,12 @@ class TriviaGame():
         self.prize_buttons = pygame.sprite.Group()
         self.lifelines = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
+        self.magic_cups = pygame.sprite.Group()
 
         # game_buttons
         self.start_button = InteractiveButton(GAME_BUTTONS['SURFS'],  (WINDOW_WIDTH / 1.67, WINDOW_HEIGHT / 1.06), (412, 144), (self.game_buttons, self.all_sprites), self.start_game, 'play')
-        
+        self.correct_button = None
+
         # questions
         self.import_questions()
         self.current_question = None
@@ -37,6 +40,8 @@ class TriviaGame():
         
         # lifelines
         self.x2_active = False
+        self.magic_cup_active = False
+        self.magic_cup_timer = Timer(2000, lambda: {cup.kill() for cup in self.magic_cups})
 
     def create_prize_tree(self):
         # draw 15 increasing values of money on the far left of the screen from bottom to top
@@ -62,13 +67,29 @@ class TriviaGame():
         self.update_current_question(self.easy_questions.pop())
 
     def activate_magic_cup(self):
+        self.magic_cup_active = True
+        for game_button in self.game_buttons:
+            game_button.deactivate()
+
         numbers = [0, 1, 2, 3]
         random.shuffle(numbers)
 
-        Cup(MAGIC_CUPS['POS'][0], numbers.pop(), self.all_sprites)
-        Cup(MAGIC_CUPS['POS'][1], numbers.pop(), self.all_sprites)
-        Cup(MAGIC_CUPS['POS'][2], numbers.pop(), self.all_sprites)
-        Cup(MAGIC_CUPS['POS'][3], numbers.pop(), self.all_sprites)
+        Cup(MAGIC_CUPS['POS'][0], numbers.pop(), (self.magic_cups, self.all_sprites))
+        Cup(MAGIC_CUPS['POS'][1], numbers.pop(), (self.magic_cups, self.all_sprites))
+        Cup(MAGIC_CUPS['POS'][2], numbers.pop(), (self.magic_cups, self.all_sprites))
+        Cup(MAGIC_CUPS['POS'][3], numbers.pop(), (self.magic_cups, self.all_sprites))
+
+    def reactivate_game_buttons(self, cup_number):
+        self.correct_button.reactivate()
+        number_of_buttons_to_reactivate = 3 - cup_number
+
+        for button in self.game_buttons:
+            if number_of_buttons_to_reactivate == 0:
+                break
+            if button != self.correct_button:
+                button.reactivate()
+                number_of_buttons_to_reactivate -= 1
+
 
     def start_game(self):
         self.background = SCREENS['blank']
@@ -97,6 +118,9 @@ class TriviaGame():
         
         for answer, button in zip(answers, self.game_buttons):
             button.update_text(answer)
+            if answer == self.current_question['correct_answer']:
+                self.correct_button = button
+
         
     def update_round(self):
         # update prize button colour
@@ -151,12 +175,23 @@ class TriviaGame():
                         if button.rect.collidepoint(event.pos) and button.is_active:
                             button.is_clicked()
                             button.deactivate()
+                    if self.magic_cup_active == True:
+                        for magic_cup in self.magic_cups:
+                            if magic_cup.rect.collidepoint(event.pos):
+                                self.reactivate_game_buttons(magic_cup.number)
+                                magic_cup.hide()
+                                self.magic_cup_timer.activate()
+                                self.magic_cup_active = False
+
+
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     self.running = False
             
             pygame.display.get_surface().blit(self.background, (0,0))
             self.all_sprites.update()
             pygame.display.update()
+            self.magic_cup_timer.update()
+            
         if self.state == 'lose':
             time.sleep(3)        
 game = TriviaGame()
