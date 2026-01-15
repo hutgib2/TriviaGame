@@ -6,6 +6,7 @@ url = "https://opentdb.com/api.php?amount=50&type=multiple"
 easy_url = "https://opentdb.com/api.php?amount=50&difficulty=easy&type=multiple"
 medium_url = "https://opentdb.com/api.php?amount=50&difficulty=medium&type=multiple"
 hard_url = "https://opentdb.com/api.php?amount=50&difficulty=hard&type=multiple"
+
 response = requests.get(hard_url)
 response.encoding = 'utf-8'
 data = response.json()

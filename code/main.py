@@ -50,8 +50,26 @@ class TriviaGame():
         for prize, button in zip(prize_money, self.prize_buttons):
             button.update_text(prize)
 
-    # lifelines activation
+    def import_questions(self):
+        self.easy_questions = []
+        medium_questions = []
+        hard_questions = []
 
+        with open('assets/trivia.json', 'r') as file:
+            questions = json.load(file)
+            for question in questions:
+                if question["difficulty"] == "easy":
+                    self.easy_questions.append(question)
+                elif question["difficulty"] == "medium":
+                    medium_questions.append(question)
+                elif question["difficulty"] == "hard":
+                    hard_questions.append(question)
+
+        random.shuffle(self.easy_questions)
+        self.questions = self.easy_questions[:5] + random.sample(medium_questions, k=5) + random.sample(hard_questions, k=5)
+        self.easy_questions = self.easy_questions[5:]
+
+    # lifelines activation
     def activate_x2(self):
         self.x2_active = True
 
@@ -68,22 +86,26 @@ class TriviaGame():
 
     def activate_magic_cup(self):
         self.magic_cup_active = True
+        self.activated_buttons = []
+
         for game_button in self.game_buttons:
-            game_button.deactivate()
+            if game_button.is_active:
+                self.activated_buttons.append(game_button)
+                game_button.deactivate()
 
-        numbers = [0, 1, 2, 3]
+        numbers = []
+        for i in range(len(self.activated_buttons)):
+            numbers.append(i)
         random.shuffle(numbers)
-
-        Cup(MAGIC_CUPS['POS'][0], numbers.pop(), (self.magic_cups, self.all_sprites))
-        Cup(MAGIC_CUPS['POS'][1], numbers.pop(), (self.magic_cups, self.all_sprites))
-        Cup(MAGIC_CUPS['POS'][2], numbers.pop(), (self.magic_cups, self.all_sprites))
-        Cup(MAGIC_CUPS['POS'][3], numbers.pop(), (self.magic_cups, self.all_sprites))
+        
+        for i in range(len(self.activated_buttons)):
+            Cup(MAGIC_CUPS['POS'][i], numbers.pop(), (self.magic_cups, self.all_sprites))
 
     def reactivate_game_buttons(self, cup_number):
         self.correct_button.reactivate()
-        number_of_buttons_to_reactivate = 3 - cup_number
+        number_of_buttons_to_reactivate = len(self.activated_buttons) - cup_number - 1
 
-        for button in self.game_buttons:
+        for button in self.activated_buttons:
             if number_of_buttons_to_reactivate == 0:
                 break
             if button != self.correct_button:
@@ -145,23 +167,6 @@ class TriviaGame():
             self.all_sprites.empty()
             self.state = 'lose'
             self.running = False
-
-    def import_questions(self):
-        self.easy_questions = []
-        medium_questions = []
-        hard_questions = []
-        with open('assets/trivia.json', 'r') as file:
-            questions = json.load(file)
-            for question in questions:
-                if question["difficulty"] == "easy":
-                    self.easy_questions.append(question)
-                elif question["difficulty"] == "medium":
-                    medium_questions.append(question)
-                elif question["difficulty"] == "hard":
-                    hard_questions.append(question)
-        random.shuffle(self.easy_questions)
-        self.questions = self.easy_questions[:5] + random.sample(medium_questions, k=5) + random.sample(hard_questions, k=5)
-        self.easy_questions = self.easy_questions[5:]
 
     def run(self):
         while self.running:

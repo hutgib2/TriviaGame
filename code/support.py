@@ -20,6 +20,6 @@ def audio_importer(*path):
 
 def split_string(string):
     i = int(len(string)/2)
-    while string[i] != ' ':
+    while i < (len(string) - 1) and string[i] != ' ':
         i += 1
     return string[:i] + '\n' + string[i+1:]
