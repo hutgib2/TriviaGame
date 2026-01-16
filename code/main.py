@@ -18,6 +18,8 @@ class TriviaGame():
         SCREENS['home'] = pygame.transform.smoothscale(SCREENS['home'], (WINDOW_WIDTH, WINDOW_HEIGHT))
         SCREENS['blank'] = pygame.transform.smoothscale(SCREENS['blank'], (WINDOW_WIDTH, WINDOW_HEIGHT))
         SCREENS['lose'] = pygame.transform.smoothscale(SCREENS['lose'], (WINDOW_WIDTH, WINDOW_HEIGHT))
+        SCREENS['win'] = pygame.transform.smoothscale(SCREENS['win'], (WINDOW_WIDTH, WINDOW_HEIGHT))
+        SCREENS['walk_away'] = pygame.transform.smoothscale(SCREENS['walk_away'], (WINDOW_WIDTH, WINDOW_HEIGHT))
         self.background = SCREENS['home']
 
         # groups
@@ -83,6 +85,9 @@ class TriviaGame():
 
     def activate_switch(self):
         self.update_current_question(self.easy_questions.pop())
+        for button in self.game_buttons:
+            if not button.is_active:
+                button.reactivate()
 
     def activate_magic_cup(self):
         self.magic_cup_active = True
@@ -129,6 +134,8 @@ class TriviaGame():
         InteractiveButton(LIFELINES['SURFS'], LIFELINES["POS"][1], LIFELINES["size"], (self.lifelines, self.all_sprites), self.activate_revive, "Revive")
         InteractiveButton(LIFELINES['SURFS'], LIFELINES["POS"][2], LIFELINES["size"], (self.lifelines, self.all_sprites), self.activate_switch, "Switch")
         InteractiveButton(LIFELINES['SURFS'], LIFELINES["POS"][3], LIFELINES["size"], (self.lifelines, self.all_sprites), self.activate_magic_cup, "Magic Cup")
+
+        InteractiveButton(WALK_AWAY['SURFS'], WALK_AWAY["pos"], WALK_AWAY["size"], (self.lifelines, self.all_sprites), lambda: self.end_game("walk_away"), "")
         self.update_current_question(self.questions[0])
 
     def update_current_question(self, question):
@@ -143,6 +150,13 @@ class TriviaGame():
             if answer == self.current_question['correct_answer']:
                 self.correct_button = button
 
+    def end_game(self, state):
+        self.background = SCREENS[state]
+        self.game_buttons.empty()
+        self.all_sprites.empty()
+        self.state = state
+        self.running = False
+
         
     def update_round(self):
         # update prize button colour
@@ -153,7 +167,10 @@ class TriviaGame():
 
         self.x2_active = False
         self.round_number += 1
-        self.update_current_question(self.questions[self.round_number])
+        if self.round_number >= len(self.questions):
+            self.end_game('win')
+        else:
+            self.update_current_question(self.questions[self.round_number])
 
     def check_result(self):
         if self.choice.text == self.current_question["correct_answer"]:
@@ -162,15 +179,14 @@ class TriviaGame():
             self.choice.deactivate()
             self.x2_active = False
         else:
-            self.background = SCREENS['lose']
-            self.game_buttons.empty()
-            self.all_sprites.empty()
-            self.state = 'lose'
-            self.running = False
+            self.end_game('lose')
 
     def run(self):
         while self.running:
             for event in pygame.event.get(): 
+                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                    self.running = False
+                    self.state = 'quit'
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     for button in self.game_buttons:
                         if button.rect.collidepoint(event.pos):
@@ -187,18 +203,15 @@ class TriviaGame():
                                 magic_cup.hide()
                                 self.magic_cup_timer.activate()
                                 self.magic_cup_active = False
-
-
-                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                    self.running = False
             
             pygame.display.get_surface().blit(self.background, (0,0))
             self.all_sprites.update()
             pygame.display.update()
             self.magic_cup_timer.update()
             
-        if self.state == 'lose':
-            time.sleep(3)        
+        if self.state != 'quit':
+            time.sleep(3)
+
 game = TriviaGame()
 game.run()
 pygame.quit()

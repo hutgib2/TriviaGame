@@ -10,12 +10,12 @@ class Button(pygame.sprite.Sprite):
         self.image_disabled = pygame.transform.smoothscale(surf_dict['disabled'], size)
         self.rect = self.image.get_frect(center=pos)
         self.is_active = True
-        self.text_sprite = TextSprite(text, self.rect.center, "darkcyan", self.rect.width, self.rect.width / 8, ())
+        self.text_sprite = TextSprite(text, self.rect.center, "darkcyan", self.rect.width, self.rect.width / 10, ())
 
     def update_text(self, text):
         self.text_sprite.kill()
         self.text = text
-        self.text_sprite = TextSprite(text, self.rect.center, "darkcyan", self.rect.width, self.rect.width / 8, ())
+        self.text_sprite = TextSprite(text, self.rect.center, "darkcyan", self.rect.width, self.rect.width / 10, ())
 
     def deactivate(self):
         self.is_active = False

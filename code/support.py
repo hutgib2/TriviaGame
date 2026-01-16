@@ -22,4 +22,11 @@ def split_string(string):
     i = int(len(string)/2)
     while i < (len(string) - 1) and string[i] != ' ':
         i += 1
-    return string[:i] + '\n' + string[i+1:]
+    
+    if i == (len(string) - 1):
+        while i > 0 and string[i] != ' ':
+            i -= 1
+    if i == 0:
+        return string
+    else:
+        return string[:i] + '\n' + string[i+1:]
