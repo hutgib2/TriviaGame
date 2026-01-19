@@ -136,7 +136,7 @@
         "difficulty": "easy",
         "category": "Entertainment: Film",
         "question": "Who directed the 2015 movie \"The Revenant\"?",
-        "correct_answer": "Alejandro G. IÃƒÂ±ÃƒÂ¡rritu",
+        "correct_answer": "Alejandro González Iñárritu",
         "incorrect_answers": [
             "Christopher Nolan",
             "David Fincher",
@@ -171,7 +171,7 @@
         "type": "multiple",
         "difficulty": "easy",
         "category": "Entertainment: Video Games",
-        "question": "PokÃƒÂ©mon Go is a location-based augmented reality game developed and published by which company?",
+        "question": "Pokemon Go is a location-based augmented reality game developed and published by which company?",
         "correct_answer": "Niantic",
         "incorrect_answers": [
             "Rovio",

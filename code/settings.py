@@ -29,6 +29,12 @@ LIFELINES = {
     'SURFS' : folder_importer('assets', 'images', 'lifelines'),
 }
 
+WALK_AWAY = {
+    'pos' : (WINDOW_WIDTH / 4, 7*WINDOW_HEIGHT / 8),
+    'size' : (WINDOW_WIDTH / 5, WINDOW_HEIGHT / 6),
+    'SURFS' : folder_importer('assets', 'images', 'walk_away'),
+}
+
 SCREENS = folder_importer('assets', 'images', 'screens')
 PRIZE_BUTTONS = folder_importer('assets', 'images', 'prize_button')
 
