@@ -1,6 +1,6 @@
-from settings import *
-from support import split_string
-from textSprite import TextSprite
+from game.settings import *
+from game.support import split_string
+from game.textSprite import TextSprite
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, surf_dict, pos, size, groups, text=''):

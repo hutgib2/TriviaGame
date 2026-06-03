@@ -1,5 +1,5 @@
-from settings import *
-from textSprite import TextSprite
+from game.settings import *
+from game.textSprite import TextSprite
 
 class Cup(pygame.sprite.Sprite):
     def __init__(self, pos, number, groups):

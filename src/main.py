@@ -1,12 +1,12 @@
-from settings import *
-from support import *
-from button import *
-from textSprite import TextSprite
-from cup import Cup
+from game.settings import *
+from game.support import *
+from game.button import *
+from game.textSprite import TextSprite
+from game.cup import Cup
+from game.timer import Timer
 import random
 import json
 import time
-from timer import Timer
 
 class TriviaGame():
     def __init__(self):
