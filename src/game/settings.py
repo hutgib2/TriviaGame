@@ -15,7 +15,7 @@ GAME_BUTTONS = {
         'bottom_right': (3*WINDOW_WIDTH / 4, 7*WINDOW_HEIGHT / 8)
     },
     'size' : (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 5),
-    'SURFS' : folder_importer('assets', 'images', 'game_button')
+    'SURFS' : folder_importer('src', 'assets', 'images', 'game_button')
 }
 
 LIFELINES = {
@@ -26,17 +26,17 @@ LIFELINES = {
         (WINDOW_WIDTH / 5, 5*WINDOW_HEIGHT / 8)
     ],
     'size' : (WINDOW_WIDTH / 10, WINDOW_HEIGHT / 9),
-    'SURFS' : folder_importer('assets', 'images', 'lifelines'),
+    'SURFS' : folder_importer('src', 'assets', 'images', 'lifelines'),
 }
 
 WALK_AWAY = {
     'pos' : (WINDOW_WIDTH / 4, 7*WINDOW_HEIGHT / 8),
     'size' : (WINDOW_WIDTH / 5, WINDOW_HEIGHT / 6),
-    'SURFS' : folder_importer('assets', 'images', 'walk_away'),
+    'SURFS' : folder_importer('src', 'assets', 'images', 'walk_away'),
 }
 
-SCREENS = folder_importer('assets', 'images', 'screens')
-PRIZE_BUTTONS = folder_importer('assets', 'images', 'prize_button')
+SCREENS = folder_importer('src', 'assets', 'images', 'screens')
+PRIZE_BUTTONS = folder_importer('src', 'assets', 'images', 'prize_button')
 
 MAGIC_CUPS = {
     'POS' : [
@@ -46,7 +46,7 @@ MAGIC_CUPS = {
         (29*WINDOW_WIDTH / 32, 3*WINDOW_HEIGHT / 8)
     ],
     'size' : (3*WINDOW_WIDTH / 32,WINDOW_HEIGHT / 4),
-    'SURFS': folder_importer('assets', 'images', 'magic_cup')
+    'SURFS': folder_importer('src', 'assets', 'images', 'magic_cup')
 }
 prize_money = [
     '£50', 
