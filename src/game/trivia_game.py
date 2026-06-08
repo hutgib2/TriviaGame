@@ -47,8 +47,8 @@ class TriviaGame():
 
     def create_prize_tree(self):
         # draw 15 increasing values of money on the far left of the screen from bottom to top
-        for i in range(31, 1, -2):
-            Button(PRIZE_BUTTONS,  (WINDOW_WIDTH / 10, (i*WINDOW_HEIGHT / 34)), (WINDOW_WIDTH / 13, WINDOW_HEIGHT / 18), (self.prize_buttons, self.all_sprites))
+        for i in range(75, 1, -5):
+            Button(PRIZE_BUTTONS,  (WINDOW_WIDTH / 10, (i*WINDOW_HEIGHT / 75)), (WINDOW_WIDTH / 11, WINDOW_HEIGHT / 15), (self.prize_buttons, self.all_sprites))
         for prize, button in zip(prize_money, self.prize_buttons):
             button.update_text(prize)
 

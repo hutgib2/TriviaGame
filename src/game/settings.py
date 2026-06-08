@@ -10,29 +10,29 @@ WINDOW_WIDTH, WINDOW_HEIGHT = screen.get_size()
 
 GAME_BUTTONS = {
     'POS' : {
-        'top_left': ((WINDOW_WIDTH / 2)-32, 5*WINDOW_HEIGHT / 8),
-        'top_right': (3*WINDOW_WIDTH / 4, 5*WINDOW_HEIGHT / 8),
-        'bottom_left': ((WINDOW_WIDTH / 2)-32, 7*WINDOW_HEIGHT / 8),
-        'bottom_right': (3*WINDOW_WIDTH / 4, 7*WINDOW_HEIGHT / 8)
+        'top_left': ((WINDOW_WIDTH / 1.75), 5*WINDOW_HEIGHT / 8),
+        'top_right': (WINDOW_WIDTH / 1.2, 5*WINDOW_HEIGHT / 8),
+        'bottom_left': ((WINDOW_WIDTH / 1.75), 7*WINDOW_HEIGHT / 8),
+        'bottom_right': (WINDOW_WIDTH / 1.2, 7*WINDOW_HEIGHT / 8)
     },
-    'size' : (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 5),
+    'size' : (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 6),
     'SURFS' : folder_importer('src', 'assets', 'images', 'game_button')
 }
 
 LIFELINES = {
     'POS' : [
-        (WINDOW_WIDTH / 5, 2*WINDOW_HEIGHT / 8),
-        (WINDOW_WIDTH / 5, 3*WINDOW_HEIGHT / 8),
-        (WINDOW_WIDTH / 5, 4*WINDOW_HEIGHT / 8),
-        (WINDOW_WIDTH / 5, 5*WINDOW_HEIGHT / 8)
+        (WINDOW_WIDTH / 4, 2.2*WINDOW_HEIGHT / 8),
+        (WINDOW_WIDTH / 4, 3.3*WINDOW_HEIGHT / 8),
+        (WINDOW_WIDTH / 4, 4.4*WINDOW_HEIGHT / 8),
+        (WINDOW_WIDTH / 4, 5.5*WINDOW_HEIGHT / 8)
     ],
-    'size' : (WINDOW_WIDTH / 10, WINDOW_HEIGHT / 9),
+    'size' : (WINDOW_WIDTH / 7, WINDOW_HEIGHT / 8),
     'SURFS' : folder_importer('src', 'assets', 'images', 'lifelines'),
 }
 
 WALK_AWAY = {
-    'pos' : (WINDOW_WIDTH / 4, 7*WINDOW_HEIGHT / 8),
-    'size' : (WINDOW_WIDTH / 5, WINDOW_HEIGHT / 6),
+    'pos' : (WINDOW_WIDTH / 3.5, 7*WINDOW_HEIGHT / 8),
+    'size' : (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 6),
     'SURFS' : folder_importer('src', 'assets', 'images', 'walk_away'),
 }
 
@@ -41,12 +41,12 @@ PRIZE_BUTTONS = folder_importer('src', 'assets', 'images', 'prize_button')
 
 MAGIC_CUPS = {
     'POS' : [
-        (11*WINDOW_WIDTH / 32, 3*WINDOW_HEIGHT / 8),
-        (17*WINDOW_WIDTH / 32, 3*WINDOW_HEIGHT / 8),
-        (23*WINDOW_WIDTH / 32, 3*WINDOW_HEIGHT / 8),
+        (14*WINDOW_WIDTH / 32, 3*WINDOW_HEIGHT / 8),
+        (19*WINDOW_WIDTH / 32, 3*WINDOW_HEIGHT / 8),
+        (24*WINDOW_WIDTH / 32, 3*WINDOW_HEIGHT / 8),
         (29*WINDOW_WIDTH / 32, 3*WINDOW_HEIGHT / 8)
     ],
-    'size' : (3*WINDOW_WIDTH / 32,WINDOW_HEIGHT / 4),
+    'size' : (WINDOW_WIDTH / 8,WINDOW_HEIGHT / 4),
     'SURFS': folder_importer('src', 'assets', 'images', 'magic_cup')
 }
 prize_money = [
