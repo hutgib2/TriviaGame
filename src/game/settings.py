@@ -26,13 +26,13 @@ LIFELINES = {
         (WINDOW_WIDTH / 4, 4.4*WINDOW_HEIGHT / 8),
         (WINDOW_WIDTH / 4, 5.5*WINDOW_HEIGHT / 8)
     ],
-    'size' : (WINDOW_WIDTH / 7, WINDOW_HEIGHT / 8),
+    'size' : (WINDOW_WIDTH / 5, WINDOW_HEIGHT / 8),
     'SURFS' : folder_importer('src', 'assets', 'images', 'lifelines'),
 }
 
 WALK_AWAY = {
-    'pos' : (WINDOW_WIDTH / 3.5, 7*WINDOW_HEIGHT / 8),
-    'size' : (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 6),
+    'pos' : (WINDOW_WIDTH / 4, 6.6*WINDOW_HEIGHT / 8),
+    'size' : (WINDOW_WIDTH / 5, WINDOW_HEIGHT / 8),
     'SURFS' : folder_importer('src', 'assets', 'images', 'walk_away'),
 }
 

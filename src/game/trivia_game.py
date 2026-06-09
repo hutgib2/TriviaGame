@@ -30,7 +30,7 @@ class TriviaGame():
         self.magic_cups = pygame.sprite.Group()
 
         # game_buttons
-        self.start_button = InteractiveButton(GAME_BUTTONS['SURFS'],  (WINDOW_WIDTH / 1.67, WINDOW_HEIGHT / 1.06), (412, 144), (self.game_buttons, self.all_sprites), self.start_game, 'play')
+        self.start_button = InteractiveButton(GAME_BUTTONS['SURFS'],  (WINDOW_WIDTH / 1.63, WINDOW_HEIGHT / 1.2), (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 6), (self.game_buttons, self.all_sprites), self.start_game, 'play')
         self.correct_button = None
 
         # questions
@@ -47,7 +47,7 @@ class TriviaGame():
 
     def create_prize_tree(self):
         # draw 15 increasing values of money on the far left of the screen from bottom to top
-        for i in range(75, 1, -5):
+        for i in range(70, 1, -5):
             Button(PRIZE_BUTTONS,  (WINDOW_WIDTH / 10, (i*WINDOW_HEIGHT / 75)), (WINDOW_WIDTH / 11, WINDOW_HEIGHT / 15), (self.prize_buttons, self.all_sprites))
         for prize, button in zip(prize_money, self.prize_buttons):
             button.update_text(prize)
