@@ -57,7 +57,7 @@ class TriviaGame():
         medium_questions = []
         hard_questions = []
 
-        with open('src/assets/trivia.json', 'r') as file:
+        with open('assets/trivia.json', 'r') as file:
             questions = json.load(file)
             for question in questions:
                 if question["difficulty"] == "easy":
