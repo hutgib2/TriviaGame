@@ -11,6 +11,7 @@ import time
 class TriviaGame():
     def __init__(self):
         # general
+        self.clock = pygame.time.Clock()
         self.running = True
         self.state = 'home'
 
@@ -183,6 +184,7 @@ class TriviaGame():
 
     async def run(self):
         while self.running:
+            self.clock.tick(30)
             await asyncio.sleep(0)
             for event in pygame.event.get(): 
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
@@ -210,6 +212,5 @@ class TriviaGame():
             pygame.display.update()
             self.magic_cup_timer.update()
             
-        if self.state != 'quit':
-            time.sleep(3)
-
+        # if self.state != 'quit':
+        #     time.sleep(3)
