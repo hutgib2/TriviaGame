@@ -1,9 +1,10 @@
 import pygame
-from game.trivia_game import TriviaGame
+from game.settings import *
+from game.menu import Menu
 import asyncio
 
 async def main():
-    game = TriviaGame()
-    await game.run()
+    menu = Menu()
+    await menu.run()
     
 asyncio.run(main())

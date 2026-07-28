@@ -6,7 +6,6 @@ from game.cup import Cup
 from game.timer import Timer
 import random
 import json
-import time
 
 class TriviaGame():
     def __init__(self):
@@ -16,11 +15,11 @@ class TriviaGame():
         self.state = 'home'
 
         # surfs
-        SCREENS['home'] = pygame.transform.smoothscale(SCREENS['home'], (WINDOW_WIDTH, WINDOW_HEIGHT))
-        SCREENS['blank'] = pygame.transform.smoothscale(SCREENS['blank'], (WINDOW_WIDTH, WINDOW_HEIGHT))
-        SCREENS['lose'] = pygame.transform.smoothscale(SCREENS['lose'], (WINDOW_WIDTH, WINDOW_HEIGHT))
-        SCREENS['win'] = pygame.transform.smoothscale(SCREENS['win'], (WINDOW_WIDTH, WINDOW_HEIGHT))
-        SCREENS['walk_away'] = pygame.transform.smoothscale(SCREENS['walk_away'], (WINDOW_WIDTH, WINDOW_HEIGHT))
+        # SCREENS['home'] = pygame.transform.smoothscale(SCREENS['home'], (WINDOW_WIDTH, WINDOW_HEIGHT))
+        # SCREENS['blank'] = pygame.transform.smoothscale(SCREENS['blank'], (WINDOW_WIDTH, WINDOW_HEIGHT))
+        # SCREENS['lose'] = pygame.transform.smoothscale(SCREENS['lose'], (WINDOW_WIDTH, WINDOW_HEIGHT))
+        # SCREENS['win'] = pygame.transform.smoothscale(SCREENS['win'], (WINDOW_WIDTH, WINDOW_HEIGHT))
+        # SCREENS['walk_away'] = pygame.transform.smoothscale(SCREENS['walk_away'], (WINDOW_WIDTH, WINDOW_HEIGHT))
         self.background = SCREENS['home']
 
         # groups
