@@ -31,7 +31,7 @@ class TriviaGame():
         self.magic_cups = pygame.sprite.Group()
 
         # game_buttons
-        self.start_button = InteractiveButton(GAME_BUTTONS['SURFS'],  (WINDOW_WIDTH / 1.63, WINDOW_HEIGHT / 1.2), (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 6), (self.game_buttons, self.all_sprites), self.start_game, 'play')
+        self.start_button = InteractiveButton(GAME_BUTTONS['SURFS'],  (WINDOW_WIDTH / 1.63, WINDOW_HEIGHT / 1.2), (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 6), (self.game_buttons, self.all_sprites), self.start_game, 'Start')
         self.correct_button = None
 
         # questions
@@ -187,9 +187,9 @@ class TriviaGame():
             self.clock.tick(30)
             await asyncio.sleep(0)
             for event in pygame.event.get(): 
-                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                    self.running = False
-                    self.state = 'quit'
+                # if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                #     self.running = False
+                #     self.state = 'quit'
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     for button in self.game_buttons:
                         if button.rect.collidepoint(event.pos):
@@ -211,6 +211,3 @@ class TriviaGame():
             self.all_sprites.update()
             pygame.display.update()
             self.magic_cup_timer.update()
-            
-        # if self.state != 'quit':
-        #     time.sleep(3)
