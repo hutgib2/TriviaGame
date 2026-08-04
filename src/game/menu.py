@@ -18,8 +18,6 @@ class Menu():
         self.running = True
 
         self.menu_sprites = pygame.sprite.Group()
-
-		# Look at how we create a game in chess-reboot menu and update this button to match
         self.start_button = InteractiveButton(GAME_BUTTONS['SURFS'],  (WINDOW_WIDTH / 1.63, WINDOW_HEIGHT / 1.2), (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 6), (self.menu_sprites), self.start_game, 'Start')
         self.pending_game = None
 

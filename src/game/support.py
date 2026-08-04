@@ -18,15 +18,18 @@ def audio_importer(*path):
             audio_dict[file_name.split('.')[0]] = pygame.mixer.Sound(join(folder_path, file_name))
     return audio_dict
 
-def split_string(string):
-    i = int(len(string)/2)
-    while i < (len(string) - 1) and string[i] != ' ':
-        i += 1
-    
-    if i == (len(string) - 1):
-        while i > 0 and string[i] != ' ':
-            i -= 1
-    if i == 0:
-        return string
+def split_string(s):
+    mid = len(s) // 2
+    left = s.rfind(' ', 0, mid)   # last space before mid, or -1
+    right = s.find(' ', mid)      # first space at/after mid, or -1
+
+    if left == -1 and right == -1: # only 1 word
+        return s
+    elif left == -1:
+        i = right
+    elif right == -1:
+        i = left
     else:
-        return string[:i] + '\n' + string[i+1:]
+        i = left if (mid - left) <= (right - mid) else right
+
+    return s[:i] + '\n' + s[i+1:]

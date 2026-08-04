@@ -4,23 +4,18 @@ from game.button import *
 from game.textSprite import TextSprite
 from game.cup import Cup
 from game.timer import Timer
+from game.async_clock import AsyncClock
+from game.api import fetchTriviaQuestions
 import random
 import json
 
 class TriviaGame():
     def __init__(self):
         # general
-        self.clock = pygame.time.Clock()
+        self.clock = AsyncClock()
         self.running = True
-        self.state = 'home'
-
-        # surfs
-        # SCREENS['home'] = pygame.transform.smoothscale(SCREENS['home'], (WINDOW_WIDTH, WINDOW_HEIGHT))
-        # SCREENS['blank'] = pygame.transform.smoothscale(SCREENS['blank'], (WINDOW_WIDTH, WINDOW_HEIGHT))
-        # SCREENS['lose'] = pygame.transform.smoothscale(SCREENS['lose'], (WINDOW_WIDTH, WINDOW_HEIGHT))
-        # SCREENS['win'] = pygame.transform.smoothscale(SCREENS['win'], (WINDOW_WIDTH, WINDOW_HEIGHT))
-        # SCREENS['walk_away'] = pygame.transform.smoothscale(SCREENS['walk_away'], (WINDOW_WIDTH, WINDOW_HEIGHT))
-        self.background = SCREENS['home']
+        self.state = 'game'
+        self.background = SCREENS['blank']
 
         # groups
         self.game_buttons = pygame.sprite.Group()
@@ -29,46 +24,67 @@ class TriviaGame():
         self.all_sprites = pygame.sprite.Group()
         self.magic_cups = pygame.sprite.Group()
 
-        # game_buttons
-        self.start_button = InteractiveButton(GAME_BUTTONS['SURFS'],  (WINDOW_WIDTH / 1.63, WINDOW_HEIGHT / 1.2), (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 6), (self.game_buttons, self.all_sprites), self.start_game, 'Start')
-        self.correct_button = None
-
         # questions
-        self.import_questions()
+        self.load_backup_questions()
         self.current_question = None
         self.choice = None
         self.round_number = 0
         self.question_sprite = TextSprite('', (5*WINDOW_WIDTH / 8, WINDOW_HEIGHT / 8), "white", 2*WINDOW_WIDTH/3, WINDOW_WIDTH / 32, (self.all_sprites))
+        self.correct_button = None
         
         # lifelines
         self.x2_active = False
         self.magic_cup_active = False
         self.magic_cup_timer = Timer(2000, lambda: {cup.kill() for cup in self.magic_cups})
 
-    def create_prize_tree(self):
-        # draw 15 increasing values of money on the far left of the screen from bottom to top
-        for i in range(70, 1, -5):
-            Button(PRIZE_BUTTONS,  (WINDOW_WIDTH / 10, (i*WINDOW_HEIGHT / 75)), (WINDOW_WIDTH / 11, WINDOW_HEIGHT / 15), (self.prize_buttons, self.all_sprites))
-        for prize, button in zip(prize_money, self.prize_buttons):
-            button.update_text(prize)
+    def load_backup_questions(self):
+        with open('assets/backup_questions.json', 'r') as file:
+            backup_questions = json.load(file)
+        
+        self.easy_backup_qs = []
+        self.medium_backup_qs = []
+        self.hard_backup_qs = []
 
-    def import_questions(self):
+        for question in backup_questions:
+            if question["difficulty"] == "easy":
+                self.easy_backup_qs.append(question)
+            elif question["difficulty"] == "medium":
+                self.medium_backup_qs.append(question)
+            elif question["difficulty"] == "hard":
+                self.hard_backup_qs.append(question)
+        
+    async def fetch_questions(self):
+        questions = await fetchTriviaQuestions(50)
         self.easy_questions = []
         medium_questions = []
         hard_questions = []
 
-        with open('assets/trivia.json', 'r') as file:
-            questions = json.load(file)
-            for question in questions:
-                if question["difficulty"] == "easy":
-                    self.easy_questions.append(question)
-                elif question["difficulty"] == "medium":
-                    medium_questions.append(question)
-                elif question["difficulty"] == "hard":
-                    hard_questions.append(question)
+        # organise each question by difficulty
+        for question in questions:
+            if question["difficulty"] == "easy":
+                self.easy_questions.append(question)
+            elif question["difficulty"] == "medium":
+                medium_questions.append(question)
+            elif question["difficulty"] == "hard":
+                hard_questions.append(question)
 
-        random.shuffle(self.easy_questions)
+        # print(f'easy amount: {len(self.easy_questions)}')
+        # print(f'medium amount: {len(medium_questions)}')
+        # print(f'hard amount: {len(hard_questions)}')
+
+        # because we cant control how many easy medium and hard qs we recieve, we need to check we have enough
+        # we need to check that we have at least 7 easy, 5 medium and 5 hard question,
+        # if not, we need to pull some from the local backup db
+        if len(self.easy_questions) < 7:
+            self.easy_questions.append(random.sample(self.easy_backup_qs, k=(7-len(self.easy_questions))))
+        if len(medium_questions) < 5:
+            self.medium_questions.append(random.sample(self.medium_backup_qs, k=(5-len(self.medium_questions))))
+        if len(hard_questions) < 5:
+            self.hard_questions.append(random.sample(self.hard_backup_qs, k=(5-len(self.hard_questions))))
+            
         self.questions = self.easy_questions[:5] + random.sample(medium_questions, k=5) + random.sample(hard_questions, k=5)
+
+        # backup easy questions for switch lifeline
         self.easy_questions = self.easy_questions[5:]
 
     # lifelines activation
@@ -80,8 +96,10 @@ class TriviaGame():
         for lifeline in self.lifelines:
             if lifeline.is_active == False:
                 deactivated_lifelines.append(lifeline)
-        reactivated_lifeline = random.choice(deactivated_lifelines)
-        reactivated_lifeline.reactivate()
+        if len(deactivated_lifelines) == 0:
+            return
+
+        random.choice(deactivated_lifelines).reactivate()
 
     def activate_switch(self):
         self.update_current_question(self.easy_questions.pop())
@@ -118,9 +136,16 @@ class TriviaGame():
                 number_of_buttons_to_reactivate -= 1
 
 
+    def create_prize_tree(self):
+        # draw 15 increasing values of money on the far left of the screen from bottom to top
+        for i in range(70, 1, -5):
+            Button(PRIZE_BUTTONS,  (WINDOW_WIDTH / 10, (i*WINDOW_HEIGHT / 75)), (WINDOW_WIDTH / 11, WINDOW_HEIGHT / 15), (self.prize_buttons, self.all_sprites))
+        for prize, button in zip(prize_money, self.prize_buttons):
+            button.update_text(prize)
+
     def start_game(self):
-        self.background = SCREENS['blank']
-        self.start_button.kill()
+        # self.background = SCREENS['blank']
+        # self.start_button.kill()
         self.create_prize_tree()
 
         # game buttons
@@ -156,7 +181,6 @@ class TriviaGame():
         self.all_sprites.empty()
         self.state = state
         self.running = False
-
         
     def update_round(self):
         # update prize button colour
@@ -182,13 +206,16 @@ class TriviaGame():
             self.end_game('lose')
 
     async def run(self):
+        await self.fetch_questions()
+        self.start_game()
+
         while self.running:
-            self.clock.tick(30)
+            self.clock.tick()
             await asyncio.sleep(0)
             for event in pygame.event.get(): 
-                # if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                #     self.running = False
-                #     self.state = 'quit'
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    self.state = 'quit'
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     for button in self.game_buttons:
                         if button.rect.collidepoint(event.pos):
@@ -210,3 +237,5 @@ class TriviaGame():
             self.all_sprites.update()
             pygame.display.update()
             self.magic_cup_timer.update()
+        
+        await asyncio.sleep(3)
