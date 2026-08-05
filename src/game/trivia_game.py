@@ -210,8 +210,7 @@ class TriviaGame():
         self.start_game()
 
         while self.running:
-            self.clock.tick()
-            await asyncio.sleep(0)
+            await self.clock.tick()
             for event in pygame.event.get(): 
                 if event.type == pygame.QUIT:
                     self.running = False
