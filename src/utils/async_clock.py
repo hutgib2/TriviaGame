@@ -1,4 +1,5 @@
-from settings import *
+import pygame
+import asyncio
 
 
 class AsyncClock:
@@ -14,4 +15,3 @@ class AsyncClock:
 		dt = now - self.previous_tick
 		self.previous_tick = now
 		return dt
-

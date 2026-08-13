@@ -1,5 +1,4 @@
 from game.settings import *
-from game.support import *
 from game.button import *
 from game.trivia_game import TriviaGame
 import asyncio
